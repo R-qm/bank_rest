@@ -1,0 +1,43 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-role-table
+      author: dev
+      preConditions:
+        - onFail: MARK_RAN
+          not:
+            tableExists:
+              tableName: role
+      changes:
+        - createTable:
+            tableName: role
+            columns:
+              - column:
+                  name: id
+                  type: BIGINT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+                  constraints:
+                    nullable: false
+                    unique: true
+
+  - changeSet:
+      id: insert-roles
+      author: dev
+      changes:
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: ADMIN
+        - insert:
+            tableName: role
+            columns:
+              - column:
+                  name: name
+                  value: USER

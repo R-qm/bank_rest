@@ -1,0 +1,65 @@
+version: "3.9"
+
+services:
+  rs_db:
+    image: postgres:15
+    container_name: postgres_container
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pas
+      POSTGRES_DB: rs_db
+    ports:
+      - "5433:5432"   # Внешний порт 5433, внутренний 5432
+    networks:
+      - rs_net
+
+  app:
+    build: .
+    container_name: app_container
+    restart: always
+    depends_on:
+      - rs_db
+    environment:
+      SPRING_DATASOURCE_URL: 'jdbc:postgresql://rs_db:5432/rs_db'
+      SPRING_DATASOURCE_USERNAME: 'user'
+      SPRING_DATASOURCE_PASSWORD: 'pas'
+      JAVA_OPTS: '-Xmx512m'
+    ports:
+      - "8080:8080"
+    networks:
+      - rs_net
+
+networks:
+  rs_net:
+    driver: bridge
+
+
+
+
+#version: '3.8'
+#
+#volumes:
+#  pg_bankRest:
+#
+#services:
+#  bank_rest_db:
+#    image: postgres:16.0
+#    restart: always
+#    environment:
+#      POSTGRES_DB: rest_bank
+#      POSTGRES_USER: user
+#      POSTGRES_PASSWORD: ps
+#    volumes:
+#      - pg_bankRest:/var/lib/postgresql/data
+#    ports:
+#      - "127.0.0.1:5433:5432"
+#
+## docker-compose.yml — определяет сервисы для разработки и тестирования.
+#
+##Что нужно сделать:
+##  - Настроить сервисы для:
+##      - PostgreSQL (или MySQL) с начальной базой.
+##      - Приложения Spring Boot (если нужно).
+##  - Открыть нужные порты (например, 5432, 8080).
+##  - Настроить volume для хранения данных БД.
